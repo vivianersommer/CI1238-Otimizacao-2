@@ -100,28 +100,36 @@ def criar_limitantes_variaveis(numero_itens, numero_pares, capacidade, itens, pa
 
     return list
 
-if __name__ == '__main__':
+
+def parcial(c, values_ub, values_eq, b_eq, b_ub, x):
+    res = linprog(c, A_ub=values_ub, A_eq=values_eq,
+                b_ub=b_ub, b_eq=b_eq,
+                bounds=x, method="simplex")
+
+    result = res['fun']
+    return result
+
+def parcial_relaxada():
 
     # Leitura pelo teclado do Problema
     numero_itens, numero_pares, capacidade, itens, pares = leituraDados()
 
     # Gerar matriz com todas as restrições de capacidade e itens
-    values_eq, values_un = criar_matriz_restricoes(numero_itens, capacidade, itens)
+    values_eq, values_ub = criar_matriz_restricoes(numero_itens, capacidade, itens)
 
     # Gerar vetor com a função de otimização
     c = criar_funcao_otimizacao(numero_itens)
 
     # Gerar valores limitantes das restrições
-    b_eq, b_un = criar_limitantes_restricoes(len(values_eq))
+    b_eq, b_ub = criar_limitantes_restricoes(len(values_eq))
 
     # Todas as variáveis devem estar entre 0 e 1
     x = criar_limitantes_variaveis(numero_itens, numero_pares, capacidade, itens, pares)
 
-    res = linprog(c, A_ub=values_un, A_eq=values_eq,
-                  b_ub=b_un, b_eq=b_eq,
-                  bounds=x, method="simplex")
+    res = parcial(c, values_ub, values_eq, b_eq, b_ub, x)
 
-    result = res['fun']
+    print(res)
 
-    print(result)
+
+parcial_relaxada()
 
