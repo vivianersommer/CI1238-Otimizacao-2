@@ -28,11 +28,29 @@ def parcial_idiota(vetor, numero_elementos):
 
 def branch_and_bound(item, capacidade):
 
+    # IDEIA GERAL
+    # testar de item cabe na viagem
+    # testar de item está na lista de pares, se estiver, testar condição
+    # testar de chamando parcial_idiota, o valor é menor do que o já obtido
+    # se passar em todos os testes, entrar na recursão
+
     if item > capacidade:
         return 0
 
     for p in pares:
-        if
+        if item == p[0]:
+            # viagem a deve ir antes de b , nesse caso item é o a
+            print("Testar se item b já não foi")
+        if item == p[1]:
+            # viagem b deve ir depois de a , nesse caso item é o b
+            print("Testar se item a já foi")
+
+    if parcial_idiota([],0) <= otimo: #o que passar para a parcial??
+        branch_and_bound(item + itens[i+1], capacidade - item)
+
+
+
+
 
     
 
@@ -41,7 +59,11 @@ def branch_and_bound(item, capacidade):
 
 if __name__ == '__main__':
 
-    global numero_itens, numero_pares, capacidade, itens, pares
+    global numero_itens, numero_pares, capacidade, itens, pares, otimo, i
+
+    otimo = numero_itens
+
+    i = 0
 
     numero_itens, numero_pares, capacidade, itens, pares = leituraDados()
 
