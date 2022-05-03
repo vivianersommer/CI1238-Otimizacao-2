@@ -1,3 +1,5 @@
+import numpy as np
+
 
 def leituraDados():
 
@@ -87,21 +89,30 @@ def gerar_ordem_com_pares():
             else:
                 sequencia.append(i)
 
-    ordem = []
-    for item_x in sequencia:
-        ordem.append(itens[item_x])
-
-    return ordem
+    return sequencia
 
 
 def analizar_pares(item):
 
+    item = item + 1
     ordem = gerar_ordem_com_pares()
 
-    # testar se itens que estão na posição anterior ao elemento, no vetor ordem ja foram usados
+    for i in ordem:
+        if i == item:
+            index = i
+            break
+
+    for j in ordem:
+        if j < index:
+            # se na ordem, já deveria ter ido outros itens
+            # analisar se esses outros itens já foram
+            if viagens[j] == 0:
+                return False
+
+    return True
 
 
-def branch_and_bound(posicao, custo_atual, capacidade, capacidade_atual):
+def branch_and_bound(posicao, capacidade, viagem_atual):
 
     # IDEIA GERAL
     # testar de item cabe na viagem
@@ -109,13 +120,25 @@ def branch_and_bound(posicao, custo_atual, capacidade, capacidade_atual):
     # testar de chamando parcial_idiota, o valor é menor do que o já obtido
     # se passar em todos os testes, entrar na recursão
 
+    if posicao >= numero_itens:
+        return
+
     item = itens[posicao]
 
-    if capacidade_atual + item >= capacidade:     # testar de item cabe na viagem
-        print("Item não cabe na viagem")
+    if viagens[posicao] != 0:
+        print("Item já viajou")
+        branch_and_bound(posicao + 1, capacidade, viagem_atual)
 
-    if analizar_pares(item):  # testar de item está na lista de pares, se estiver, testar condição
-        print("Item tem dependência nos pares")
+    if viagens[viagem_atual] + item <= capacidade and analizar_pares(posicao):  # testar de item está na lista de pares, se estiver, testar condição
+        print("Item é viavel")
+        # atualizar viagem do item e os pesos
+        viagens[posicao] = viagem_atual
+        pesos[posicao] = pesos[posicao] + item
+        branch_and_bound(posicao + 1, capacidade, viagem_atual)
+
+    else:
+        print("Item não é viável")
+        branch_and_bound(posicao - 1, capacidade, viagem_atual)
 
     # if parcial_idiota([],0) <= otimo: #o que passar para a parcial??
     #     branch_and_bound(item + itens[i+1], capacidade - item)
@@ -123,9 +146,17 @@ def branch_and_bound(posicao, custo_atual, capacidade, capacidade_atual):
 
 if __name__ == '__main__':
 
+    global viagens, pesos
+
     numero_itens, numero_pares, capacidade, itens, pares = leituraDados()
 
-    branch_and_bound(0, numero_itens, capacidade, capacidade)
+    viagens = np.zeros(numero_itens)
+
+    pesos = np.zeros(numero_itens)
+
+    branch_and_bound(0, capacidade, 1)
+
+    print(viagens)
 
 # 5 2 10
 # 5 6 4 8 5
