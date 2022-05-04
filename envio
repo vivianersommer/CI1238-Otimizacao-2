@@ -1,8 +1,10 @@
+#!/usr/bin/python3
+# -*- coding: utf-8 -*-
+
 import numpy as np
 
 
 def leituraDados():
-
     global numero_itens, numero_pares, capacidade, itens, pares
 
     numero_itens = int(input(""))
@@ -21,8 +23,8 @@ def leituraDados():
 
     return numero_itens, numero_pares, capacidade, itens, pares
 
-def parcial(vetor, numero_elementos):
 
+def parcial(vetor, numero_elementos):
     soma = 0
     for item in vetor:
         soma = soma + item
@@ -34,7 +36,7 @@ def parcial(vetor, numero_elementos):
 def gerar_ordem_com_pares():
     dependencias = {}
     for i, item_x in enumerate(itens):
-        dependencias[str(i+1)] = []
+        dependencias[str(i + 1)] = []
 
     for par in pares:
         par_1 = par[0]
@@ -93,12 +95,10 @@ def gerar_ordem_com_pares():
 
 
 def analizar_pares(item):
-
     item = item + 1
     ordem = gerar_ordem_com_pares()
-    # print(ordem)
 
-    for index,i in enumerate(ordem):
+    for index, i in enumerate(ordem):
         if i == item:
             break
 
@@ -106,20 +106,19 @@ def analizar_pares(item):
         if j < index and viagens[j - 1] == 0:
             # se na ordem, já deveria ter ido outros itens
             # analisar se esses outros itens já foram
-                return False
+            return False
 
     return True
 
 
 def branch_and_bound(posicao, capacidade, viagem_atual):
-
     # IDEIA GERAL
     # testar de item cabe na viagem
     # testar de item está na lista de pares, se estiver, testar condição
     # testar de chamando parcial_idiota, o valor é menor do que o já obtido
     # se passar em todos os testes, entrar na recursão
 
-    for l,k in enumerate(cabe):
+    for l, k in enumerate(cabe):
         if viagens[l] != 0:
             cabe[l] = 1
         else:
@@ -145,12 +144,9 @@ def branch_and_bound(posicao, capacidade, viagem_atual):
     item = itens[posicao]
 
     if viagens[posicao] != 0:
-        # print("Item já viajou")
         branch_and_bound(posicao + 1, capacidade, viagem_atual)
 
     if pesos[viagem_atual] + item <= capacidade and analizar_pares(posicao) and parcial(itens, numero_itens):  # testar de item está na lista de pares, se estiver, testar condição
-        # print("Item é viavel")
-
         # atualizar viagem do item e os pesos
         viagens[posicao] = int(viagem_atual)
         pesos[viagem_atual] = pesos[viagem_atual] + item
@@ -161,10 +157,7 @@ def branch_and_bound(posicao, capacidade, viagem_atual):
         branch_and_bound(posicao + 1, capacidade, viagem_atual)
 
     else:
-        # print("Item não é viável")
-        # print("Item = " + str(item) + " e index = " + str(posicao))
         branch_and_bound(posicao + 1, capacidade, viagem_atual)
-
 
 
 if __name__ == '__main__':
@@ -188,17 +181,4 @@ if __name__ == '__main__':
 
     print(int(maior))
     for viagem in viagens:
-            print(int(viagem))
-
-
-# 5 2 10
-# 5 6 4 8 5
-# 2 3
-# 5 1
-
-
-# [5, 1, 2 ,3 ,4]
-# [5, 5, 6, 4, 8]
-
-# [3. 1. 1. 0. 2.]
-# [1. 2. 2. 3. 1.]
+        print(int(viagem))
