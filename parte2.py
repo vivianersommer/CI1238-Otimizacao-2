@@ -96,7 +96,7 @@ def analizar_pares(item):
 
     item = item + 1
     ordem = gerar_ordem_com_pares()
-    print(ordem)
+    # print(ordem)
 
     for index,i in enumerate(ordem):
         if i == item:
@@ -139,18 +139,21 @@ def branch_and_bound(posicao, capacidade, viagem_atual):
         viagens[posicao] = viagem_atual + 1
         return
 
+    if pesos[viagem_atual] == capacidade:
+        viagem_atual += 1
+
     item = itens[posicao]
 
     if viagens[posicao] != 0:
-        print("Item já viajou")
+        # print("Item já viajou")
         branch_and_bound(posicao + 1, capacidade, viagem_atual)
 
     if pesos[viagem_atual] + item <= capacidade and analizar_pares(posicao) and parcial(itens, numero_itens):  # testar de item está na lista de pares, se estiver, testar condição
-        print("Item é viavel")
+        # print("Item é viavel")
 
         # atualizar viagem do item e os pesos
         viagens[posicao] = int(viagem_atual)
-        pesos[posicao] = pesos[posicao] + item
+        pesos[viagem_atual] = pesos[viagem_atual] + item
 
         if pesos[viagem_atual] + item == capacidade:
             viagem_atual = viagem_atual + 1
@@ -158,19 +161,8 @@ def branch_and_bound(posicao, capacidade, viagem_atual):
         branch_and_bound(posicao + 1, capacidade, viagem_atual)
 
     else:
-        print("Item não é viável")
-        # for i, item in enumerate(viagens):
-        #     if item == 0 and i != posicao and pesos[viagem_atual] + itens[i] <= capacidade:
-        #         branch_and_bound(i, capacidade, viagem_atual)
-        #     else:
-        #         cabe[i] = 1
-        #
-        # soma = 0
-        # for l in cabe:
-        #     soma = soma + l
-        # if soma == numero_itens:
-        #     branch_and_bound(posicao + 1, capacidade, viagem_atual + 1)
-        print("Item = " + str(item) + " e index = " + str(posicao))
+        # print("Item não é viável")
+        # print("Item = " + str(item) + " e index = " + str(posicao))
         branch_and_bound(posicao + 1, capacidade, viagem_atual)
 
 
@@ -189,7 +181,15 @@ if __name__ == '__main__':
 
     branch_and_bound(0, capacidade, 1)
 
-    print(viagens)
+    maior = -1
+    for viagem in viagens:
+        if viagem >= maior:
+            maior = viagem
+
+    print(int(maior))
+    for viagem in viagens:
+            print(int(viagem))
+
 
 # 5 2 10
 # 5 6 4 8 5
